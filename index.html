@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pemeta Personaliti &mdash; Ujian 4 Temperamen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ CONFIG TOKENS ============ */
+:root{
+  --navy:#0B1C36;
+  --navy-2:#081428;
+  --navy-soft:#13294b;
+  --paper:#F7F3EA;
+  --paper-2:#fffdf8;
+  --ink:#1b2433;
+  --brass:#C9A24B;
+  --brass-soft:#e3c989;
+  --line:rgba(201,162,75,.28);
+
+  --sang:#E9A33B;  /* Sanguine - kuning */
+  --chol:#C2362B;  /* Choleric - merah  */
+  --phleg:#2E8B66; /* Phlegmatic- hijau */
+  --melan:#2F5DA8; /* Melancholy- biru  */
+
+  --sang-d:#b87d1c; --chol-d:#8f241c; --phleg-d:#1f6249; --melan-d:#214380;
+
+  --shadow:0 22px 60px -28px rgba(8,20,40,.55);
+  --radius:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1200px 600px at 50% -10%, #102a4f 0%, var(--navy) 45%, var(--navy-2) 100%);
+  min-height:100vh;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:760px;margin:0 auto;padding:24px 18px 80px}
+.screen{display:none;animation:rise .5s cubic-bezier(.2,.7,.2,1) both}
+.screen.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- masthead ---- */
+.masthead{text-align:center;color:var(--paper);padding:14px 0 6px}
+.eyebrow{font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;color:var(--brass-soft);font-weight:700}
+.masthead h1{font-family:'Fraunces',serif;font-weight:600;font-size:clamp(2rem,7vw,3rem);line-height:1.04;margin:.18em 0 .12em;letter-spacing:-.01em}
+.masthead h1 em{font-style:italic;color:var(--brass-soft)}
+.masthead p{color:#c9d6ec;font-size:.98rem;max-width:46ch;margin:0 auto}
+.rule{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:20px auto;max-width:480px}
+
+/* ---- card ---- */
+.card{
+  background:linear-gradient(180deg,var(--paper-2),var(--paper));
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:30px 26px;
+  position:relative;overflow:hidden;
+}
+.card::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;
+  background:linear-gradient(160deg,rgba(201,162,75,.5),transparent 40%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;pointer-events:none}
+
+/* ---- signature compass ---- */
+.compass{width:188px;height:188px;margin:6px auto 22px;position:relative;
+  border-radius:18px;background:var(--navy);padding:9px;
+  box-shadow:0 18px 40px -20px rgba(8,20,40,.7), inset 0 0 0 1px rgba(201,162,75,.35)}
+.compass .grid{width:100%;height:100%;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:7px}
+.compass .q{border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-family:'Fraunces',serif;font-weight:600;font-size:1.5rem;color:#fff;opacity:.92;
+  transition:transform .4s,box-shadow .4s,opacity .4s}
+.q.s{background:var(--sang)}.q.c{background:var(--chol)}.q.p{background:var(--phleg)}.q.m{background:var(--melan)}
+.compass.live .q{opacity:.45}
+.compass .q.on{opacity:1;transform:scale(1.04);box-shadow:0 0 0 2px #fff inset,0 8px 18px -6px rgba(0,0,0,.5)}
+.compass .needle{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.compass .needle b{width:30px;height:30px;border-radius:50%;background:var(--navy);border:2px solid var(--brass);
+  box-shadow:0 0 0 4px var(--navy)}
+
+/* ---- buttons ---- */
+.btn{font-family:inherit;font-weight:700;font-size:1rem;border:none;cursor:pointer;
+  border-radius:999px;padding:14px 30px;transition:transform .15s,box-shadow .25s,background .2s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--navy);color:var(--paper);box-shadow:0 12px 26px -12px rgba(8,20,40,.8), inset 0 0 0 1px rgba(201,162,75,.5)}
+.btn-primary:hover{background:var(--navy-soft)}
+.btn-gold{background:linear-gradient(180deg,var(--brass-soft),var(--brass));color:#3a2c08;box-shadow:0 12px 24px -12px rgba(201,162,75,.8)}
+.btn-ghost{background:transparent;color:var(--navy);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn-ghost:hover{background:rgba(201,162,75,.08)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.center{text-align:center}
+.btnrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:22px}
+
+/* ---- intro copy ---- */
+.lead{font-family:'Fraunces',serif;font-size:1.32rem;line-height:1.4;color:var(--navy);text-align:center;margin-bottom:8px}
+.sub{text-align:center;color:#54607a;max-width:50ch;margin:0 auto 4px}
+.legend{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:22px 0 4px}
+.lg{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:rgba(11,28,54,.035);border:1px solid rgba(11,28,54,.06)}
+.lg .dot{width:14px;height:14px;border-radius:5px;margin-top:4px;flex:none}
+.lg b{font-family:'Fraunces',serif;font-weight:600;display:block;font-size:.98rem}
+.lg small{color:#65718a;font-size:.8rem;line-height:1.35;display:block}
+
+/* ---- form ---- */
+.field{margin:16px 0}
+.field label{display:block;font-weight:600;font-size:.86rem;margin-bottom:6px;color:var(--navy)}
+.field label .opt{font-weight:500;color:#8a93a6;font-size:.78rem}
+.field input{width:100%;font-family:inherit;font-size:1rem;padding:13px 15px;border-radius:12px;
+  border:1.5px solid rgba(11,28,54,.14);background:#fff;color:var(--ink);transition:border .2s,box-shadow .2s}
+.field input:focus{outline:none;border-color:var(--brass);box-shadow:0 0 0 3px rgba(201,162,75,.18)}
+
+/* ---- quiz ---- */
+.progress{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.progress .track{flex:1;height:8px;border-radius:99px;background:rgba(201,162,75,.18);overflow:hidden}
+.progress .fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--brass-soft),var(--brass));transition:width .4s cubic-bezier(.2,.7,.2,1)}
+.progress .count{color:var(--paper);font-weight:700;font-size:.86rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.qcat{text-align:center;font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;font-weight:700;color:var(--brass);margin-bottom:8px}
+.qtitle{font-family:'Fraunces',serif;font-size:1.32rem;text-align:center;color:var(--navy);margin-bottom:4px;line-height:1.3}
+.qhint{text-align:center;color:#7a849a;font-size:.85rem;margin-bottom:20px}
+.opts{display:grid;gap:11px}
+.opt-btn{font-family:inherit;text-align:left;cursor:pointer;border:1.5px solid rgba(11,28,54,.12);
+  background:#fff;border-radius:14px;padding:15px 17px;font-size:1.04rem;font-weight:600;color:var(--ink);
+  display:flex;align-items:center;gap:13px;transition:transform .12s,border .2s,box-shadow .2s,background .2s}
+.opt-btn:hover{border-color:var(--brass);box-shadow:0 8px 20px -12px rgba(8,20,40,.4)}
+.opt-btn:active{transform:scale(.99)}
+.opt-btn .pip{width:11px;height:11px;border-radius:50%;flex:none}
+.opt-btn.sel{border-color:var(--navy);background:var(--navy);color:#fff;box-shadow:var(--shadow)}
+.opt-btn.sel .pip{box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.quiz-nav{display:flex;justify-content:space-between;margin-top:20px;gap:10px}
+
+/* ---- result ---- */
+.crest{position:relative;border-radius:18px;padding:26px 22px;color:#fff;text-align:center;overflow:hidden;margin-bottom:4px}
+.crest::after{content:"";position:absolute;inset:0;background:radial-gradient(420px 200px at 50% -30%,rgba(255,255,255,.28),transparent)}
+.crest .k{position:relative;font-size:.72rem;letter-spacing:.3em;text-transform:uppercase;font-weight:700;opacity:.9}
+.crest h2{position:relative;font-family:'Fraunces',serif;font-weight:700;font-size:clamp(1.9rem,7vw,2.7rem);line-height:1.05;margin:.12em 0}
+.crest .role{position:relative;font-style:italic;font-family:'Fraunces',serif;font-size:1.1rem;opacity:.95}
+.crest .moto{position:relative;margin-top:10px;font-weight:700;font-size:1rem;background:rgba(0,0,0,.16);display:inline-block;padding:6px 16px;border-radius:99px}
+.secline{text-align:center;color:#54607a;margin:16px 0;font-size:.96rem}
+.secline b{color:var(--navy)}
+
+.donutwrap{display:flex;gap:22px;align-items:center;justify-content:center;flex-wrap:wrap;margin:8px 0 4px}
+.donut{width:150px;height:150px;border-radius:50%;position:relative;flex:none}
+.donut .hole{position:absolute;inset:26px;background:var(--paper-2);border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut .hole b{font-family:'Fraunces',serif;font-size:1.6rem;color:var(--navy);line-height:1}
+.donut .hole small{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#8a93a6;margin-top:3px}
+.bars{flex:1;min-width:210px}
+.bar{margin:9px 0}
+.bar .top{display:flex;justify-content:space-between;font-size:.84rem;font-weight:600;margin-bottom:4px}
+.bar .top span:last-child{font-variant-numeric:tabular-nums;color:#65718a}
+.bar .track{height:9px;border-radius:99px;background:rgba(11,28,54,.07);overflow:hidden}
+.bar .fill{height:100%;border-radius:99px;width:0;transition:width .8s cubic-bezier(.2,.7,.2,1)}
+
+.sec{margin-top:22px}
+.sec h3{font-family:'Fraunces',serif;font-size:1.16rem;color:var(--navy);display:flex;align-items:center;gap:9px;margin-bottom:10px}
+.sec h3 .tick{width:8px;height:20px;border-radius:3px;flex:none}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:rgba(11,28,54,.05);border:1px solid rgba(11,28,54,.08);border-radius:99px;padding:6px 13px;font-size:.86rem;font-weight:600;color:var(--navy)}
+.flowtext{color:#3c465a;font-size:.96rem}
+.flowtext p{margin:6px 0}
+.tipbox{background:rgba(201,162,75,.08);border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-size:.93rem;color:#4a4326}
+.tipbox b{color:var(--navy)}
+
+.footer{text-align:center;color:#8aa0c4;font-size:.8rem;margin-top:26px}
+.footer a{color:var(--brass-soft);text-decoration:none}
+.savestate{text-align:center;font-size:.82rem;margin-top:14px;min-height:1.1em}
+.savestate.ok{color:var(--phleg)}.savestate.err{color:var(--chol)}.savestate.busy{color:#8a93a6}
+
+/* ---- admin ---- */
+.adminbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.adminbar input{flex:1;min-width:160px;padding:11px 14px;border-radius:10px;border:1.5px solid rgba(11,28,54,.14);font-family:inherit;font-size:.95rem}
+.stat{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:6px 0 20px}
+.stat .s{border-radius:14px;padding:14px;color:#fff;text-align:center}
+.stat .s b{font-family:'Fraunces',serif;font-size:1.8rem;display:block;line-height:1}
+.stat .s small{font-size:.74rem;opacity:.92;letter-spacing:.04em}
+table{width:100%;border-collapse:collapse;font-size:.86rem}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid rgba(11,28,54,.08)}
+th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:#8a93a6}
+td .badge{font-weight:700;font-size:.78rem;padding:2px 9px;border-radius:99px;color:#fff}
+.tablewrap{overflow-x:auto;border:1px solid rgba(11,28,54,.08);border-radius:14px}
+
+@media (max-width:480px){
+  .card{padding:24px 18px}
+  .legend{grid-template-columns:1fr}
+  .stat{grid-template-columns:repeat(2,1fr)}
+}
+@media print{
+  body{background:#fff}
+  .masthead,.btnrow,.quiz-nav,.savestate,.footer .pr{display:none}
+  .card{box-shadow:none;border:1px solid #ccc}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="masthead" id="masthead">
+    <div class="eyebrow">Profil Personaliti</div>
+    <h1>Pemeta <em>Personaliti</em></h1>
+    <p>Kenali jenis temperamen anda berdasarkan kerangka klasik empat personaliti.</p>
+  </div>
+  <div class="rule"></div>
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen active" id="s-intro">
+    <div class="card">
+      <div class="compass">
+        <div class="grid">
+          <div class="q s">S</div><div class="q c">C</div>
+          <div class="q p">P</div><div class="q m">M</div>
+        </div>
+      </div>
+      <p class="lead">Empat temperamen, satu diri yang unik.</p>
+      <p class="sub">Kebanyakan kita ialah gabungan dua jenis &mdash; satu dominan, satu sokongan. Jawab 40 soalan ringkas dan temui peta personaliti anda.</p>
+
+      <div class="legend">
+        <div class="lg"><span class="dot" style="background:var(--sang)"></span><div><b>Sanguine</b><small>Si Periang &mdash; mesra, bertenaga, suka berinteraksi.</small></div></div>
+        <div class="lg"><span class="dot" style="background:var(--chol)"></span><div><b>Choleric</b><small>Si Penggerak &mdash; tegas, berfokus, berorientasikan matlamat.</small></div></div>
+        <div class="lg"><span class="dot" style="background:var(--phleg)"></span><div><b>Phlegmatic</b><small>Si Pendamai &mdash; tenang, sabar, mudah bekerjasama.</small></div></div>
+        <div class="lg"><span class="dot" style="background:var(--melan)"></span><div><b>Melancholy</b><small>Si Pemikir &mdash; teliti, mendalam, mementingkan kesempurnaan.</small></div></div>
+      </div>
+
+      <div class="btnrow">
+        <button class="btn btn-primary" onclick="go('form')">Mula Ujian</button>
+      </div>
+      <p class="center" style="margin-top:14px"><small style="color:#9aa3b5">Anggaran 3&ndash;5 minit &middot; Tiada jawapan betul atau salah</small></p>
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="screen" id="s-form">
+    <div class="card">
+      <p class="lead">Sebelum mula</p>
+      <p class="sub">Maklumat ini membantu menyimpan keputusan anda. Tinggalkan kosong jika mahu jawab tanpa nama.</p>
+      <div class="field">
+        <label for="f-nama">Nama <span class="opt">(pilihan)</span></label>
+        <input id="f-nama" type="text" autocomplete="name" placeholder="cth. Ahmad bin Ismail">
+      </div>
+      <div class="field">
+        <label for="f-unit">Jawatan / Unit / Sekolah <span class="opt">(pilihan)</span></label>
+        <input id="f-unit" type="text" placeholder="cth. PPP, Sektor Pengurusan / SK ...">
+      </div>
+      <div class="btnrow">
+        <button class="btn btn-ghost" onclick="go('intro')">Kembali</button>
+        <button class="btn btn-gold" onclick="startQuiz()">Teruskan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="screen" id="s-quiz">
+    <div class="progress">
+      <div class="track"><div class="fill" id="pfill"></div></div>
+      <div class="count" id="pcount">1 / 40</div>
+    </div>
+    <div class="card">
+      <div class="qcat" id="qcat">Kekuatan</div>
+      <div class="qtitle">Yang mana paling menggambarkan anda?</div>
+      <div class="qhint">Pilih <b>satu</b> perkataan yang paling hampir dengan diri anda.</div>
+      <div class="opts" id="opts"></div>
+      <div class="quiz-nav">
+        <button class="btn btn-ghost" id="backBtn" onclick="prevQ()">&larr; Sebelum</button>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQ()" disabled>Seterusnya &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESULT ============ -->
+  <section class="screen" id="s-result">
+    <div class="card" id="resultCard"><!-- injected --></div>
+    <div class="savestate" id="savestate"></div>
+    <div class="btnrow">
+      <button class="btn btn-ghost pr" onclick="window.print()">Cetak / Simpan PDF</button>
+      <button class="btn btn-gold pr" onclick="restart()">Ujian Semula</button>
+    </div>
+  </section>
+
+  <!-- ============ ADMIN ============ -->
+  <section class="screen" id="s-admin">
+    <div class="card">
+      <p class="lead">Dashboard Pentadbir</p>
+      <p class="sub">Lihat taburan personaliti seluruh respons yang direkod.</p>
+      <div class="adminbar">
+        <input id="adminPass" type="password" placeholder="Kata laluan pentadbir">
+        <button class="btn btn-primary" onclick="loadAdmin()">Buka</button>
+      </div>
+      <div id="adminBody"></div>
+    </div>
+    <div class="btnrow"><button class="btn btn-ghost" onclick="go('intro')">Kembali ke Ujian</button></div>
+  </section>
+
+  <div class="footer">
+    Pemeta Personaliti &middot; by <b>Cikgu Shahril</b>
+    <span class="pr"> &middot; <a href="#" onclick="go('admin');return false">Pentadbir</a></span>
+  </div>
+</div>
+
+<script>
+/* ======================================================================
+   KONFIGURASI  — isi selepas deploy GAS Web App
+   ====================================================================== */
+const CONFIG = {
+  GAS_URL: "",                 // <-- tampal URL GAS Web App di sini
+  ADMIN_PASS: "kedah2026"      // <-- tukar kata laluan pentadbir
+};
+
+/* ======================================================================
+   DATA TEMPERAMEN
+   ====================================================================== */
+const T = {
+  S:{key:"S",nama:"Popular Sanguine",julukan:"Si Periang",peranan:"The Talker",
+     moto:"\u201CMana seronoknya?\u201D",warna:"var(--sang)",dark:"var(--sang-d)",
+     ringkas:"Anda menghidupkan suasana \u2014 mesra, bertenaga dan penuh inspirasi. Anda berkembang melalui interaksi, pujian dan suasana yang positif.",
+     kuat:["Peramah & mudah didekati","Optimis & bertenaga","Pandai berkomunikasi","Spontan & kreatif","Memberi semangat kepada orang lain"],
+     cabaran:["Mudah hilang fokus","Kurang teratur","Cenderung bercakap lebih daripada bertindak","Kurang sabar dengan tugasan rutin"],
+     kerja:"Bersinar dalam kerja melibatkan orang ramai, idea dan suasana dinamik \u2014 pengacaraan, latihan, promosi, hubungan awam.",
+     tips:"Berikan ruang untuk berinteraksi dan diiktiraf. Bantu mereka kekal fokus dengan senarai tugas pendek dan tarikh akhir yang jelas."},
+  C:{key:"C",nama:"Powerful Choleric",julukan:"Si Penggerak",peranan:"The Doer",
+     moto:"\u201CBuat saja!\u201D",warna:"var(--chol)",dark:"var(--chol-d)",
+     ringkas:"Anda berorientasikan hasil \u2014 tegas, berkeyakinan dan pantas membuat keputusan. Anda suka memimpin dan menyelesaikan masalah.",
+     kuat:["Tegas & berkeyakinan","Berorientasikan matlamat","Pemimpin semula jadi","Pantas membuat keputusan","Produktif & gigih"],
+     cabaran:["Mungkin terlalu mengawal","Kurang sabar","Cenderung degil","Boleh terlepas pandang perasaan orang lain"],
+     kerja:"Cemerlang dalam peranan kepimpinan, pengurusan projek dan situasi mendesak yang memerlukan keputusan pantas.",
+     tips:"Beri mereka cabaran, autonomi dan matlamat yang jelas. Hormati masa mereka \u2014 terus kepada inti perkara."},
+  M:{key:"M",nama:"Perfect Melancholy",julukan:"Si Pemikir",peranan:"The Thinker",
+     moto:"\u201CKalau buat, buat betul-betul.\u201D",warna:"var(--melan)",dark:"var(--melan-d)",
+     ringkas:"Anda mendalam, teliti dan berprinsip. Anda menghargai kualiti, ketepatan dan perancangan yang rapi.",
+     kuat:["Teliti & sistematik","Berdisiplin & berdedikasi","Setia & boleh dipercayai","Berfikiran analitik","Tinggi standard kerja"],
+     cabaran:["Cenderung perfeksionis","Mudah murung atau bimbang","Kadang terlalu kritikal","Memerlukan masa membuat keputusan"],
+     kerja:"Unggul dalam kerja memerlukan ketepatan, analisis dan perancangan \u2014 data, kewangan, penyelidikan, kawalan kualiti.",
+     tips:"Beri masa dan maklumat lengkap sebelum mereka membuat keputusan. Hargai kualiti kerja mereka, bukan sekadar kelajuan."},
+  P:{key:"P",nama:"Peaceful Phlegmatic",julukan:"Si Pendamai",peranan:"The Watcher",
+     moto:"\u201CJaga keamanan.\u201D",warna:"var(--phleg)",dark:"var(--phleg-d)",
+     ringkas:"Anda tenang, sabar dan mudah bekerjasama. Anda menjadi penyeimbang yang menstabilkan suasana dan mengelakkan konflik.",
+     kuat:["Tenang & sabar","Mudah bekerjasama","Pendengar yang baik","Konsisten & boleh diharap","Diplomatik & adil"],
+     cabaran:["Cenderung menangguh","Sukar membuat keputusan","Mengelak konflik secara berlebihan","Kurang inisiatif untuk berubah"],
+     kerja:"Sesuai dalam peranan menyokong, menyelaras dan mengekalkan keharmonian pasukan \u2014 perundingan, khidmat pelanggan, sokongan.",
+     tips:"Beri arahan yang jelas dan galakan lembut. Elakkan tekanan mengejut \u2014 mereka berkembang dalam persekitaran yang stabil."}
+};
+const ORDER=["S","C","M","P"];
+const cssColor=v=>getComputedStyle(document.documentElement).getPropertyValue(v.replace('var(','').replace(')','').trim()).trim();
+
+/* ======================================================================
+   SOALAN  (40)  — setiap baris: { cat, opts:[{t,w}...] }
+   t = temperamen, w = perkataan.  Karangan asli (BM).
+   ====================================================================== */
+const STRENGTH = [
+  ["Bersemangat","Berdaya saing","Teliti","Tenang"],
+  ["Suka berseronok","Tegas","Setia","Sabar"],
+  ["Peramah","Berani","Berhati-hati","Diplomatik"],
+  ["Spontan","Yakin","Sistematik","Rendah hati"],
+  ["Optimis","Berdikari","Berdisiplin","Mudah lentur"],
+  ["Mesra","Berwawasan","Mendalam","Konsisten"],
+  ["Ceria","Cekap","Suka berfikir","Lembut"],
+  ["Menghiburkan","Berhasrat tinggi","Berbakat seni","Tidak gusar"],
+  ["Mudah bergaul","Pemimpin","Perancang rapi","Mendamaikan"],
+  ["Bertenaga","Berfokus","Idealistik","Toleran"],
+  ["Pemurah","Produktif","Berwaspada","Pemerhati baik"],
+  ["Berkarisma","Gigih","Berprinsip","Mudah didekati"],
+  ["Suka bercerita","Pantas bertindak","Cermat","Pendengar baik"],
+  ["Penuh keseronokan","Berorientasi matlamat","Berseni","Stabil"],
+  ["Memberi inspirasi","Bermotivasi tinggi","Sensitif","Mudah puas hati"],
+  ["Periang","Berkeyakinan","Tertib","Sederhana"],
+  ["Menarik perhatian","Berinisiatif","Setia kawan","Tidak suka gaduh"],
+  ["Penuh warna","Berkemahuan kuat","Tekun","Penyabar"],
+  ["Suka berkawan","Berkebolehan memimpin","Berhati-hati","Mudah bekerjasama"],
+  ["Menyenangkan","Berani ambil risiko","Berfikiran kritis","Tenang dalam tekanan"]
+];
+const WEAKNESS = [
+  ["Bercakap berlebihan","Suka mengarah","Terlalu sensitif","Suka bertangguh"],
+  ["Tidak teratur","Tidak sabar","Mudah murung","Kurang bersemangat"],
+  ["Mudah lupa","Degil","Perfeksionis melampau","Sukar membuat keputusan"],
+  ["Kurang fokus","Dominan","Suka mengkritik","Pendiam berlebihan"],
+  ["Suka menyampuk","Panas baran","Negatif/skeptikal","Mengelak konflik"],
+  ["Tidak konsisten","Tidak berkompromi","Cepat tersinggung","Kurang inisiatif"],
+  ["Cepat bosan","Terlalu mendesak","Terlalu berhati-hati","Malas berubah"],
+  ["Suka tunjuk diri","Tidak fleksibel","Suka pegang hati","Acuh tak acuh"],
+  ["Kurang disiplin","Suka mengawal","Sukar berpuas hati","Mengelak tanggungjawab"],
+  ["Melebih-lebih","Marah cepat","Suka bimbang","Lembap bertindak"],
+  ["Tidak menepati masa","Kurang bertimbang rasa","Suka mengasingkan diri","Keras kepala senyap"],
+  ["Cepat melatah","Suka berdebat","Terlalu serius","Kurang motivasi"],
+  ["Membesar-besarkan cerita","Tidak suka dibantah","Mudah kecewa","Suka berlengah"],
+  ["Mudah teralih","Kurang sabar dgn orang","Cepat berkecil hati","Pasif"],
+  ["Kurang teliti","Memaksa kehendak","Bimbang berlebihan","Mengelak risiko"],
+  ["Banyak cakap kurang buat","Mementingkan kerja","Sukar maaf diri","Tidak tegas"],
+  ["Suka jadi tumpuan","Tidak mendengar","Pemalu/menjauh","Suka berlengah"],
+  ["Naif","Suka menang sendiri","Mudah tertekan","Tidak bersungguh"],
+  ["Tidak serius","Garang","Terlalu menganalisis","Kurang yakin diri"],
+  ["Cepat lupa janji","Suka memerintah","Sukar tolak ansur idea","Suka tangguh keputusan"]
+];
+// Bina senarai soalan: opsyen disusun ikut S,C,M,P; dikocok semasa papar.
+function buildQuestions(){
+  const q=[];
+  STRENGTH.forEach(r=>q.push({cat:"Kekuatan",opts:ORDER.map((t,i)=>({t,w:r[i]}))}));
+  WEAKNESS.forEach(r=>q.push({cat:"Kelemahan",opts:ORDER.map((t,i)=>({t,w:r[i]}))}));
+  return q;
+}
+const QUESTIONS=buildQuestions();
+
+/* ======================================================================
+   STATE + NAVIGASI
+   ====================================================================== */
+let answers=new Array(QUESTIONS.length).fill(null);
+let idx=0, shuffledCache={}, user={nama:"",unit:""};
+
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+name).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function startQuiz(){
+  user.nama=document.getElementById('f-nama').value.trim();
+  user.unit=document.getElementById('f-unit').value.trim();
+  answers=new Array(QUESTIONS.length).fill(null); idx=0; shuffledCache={};
+  go('quiz'); renderQ();
+}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+function renderQ(){
+  const q=QUESTIONS[idx];
+  document.getElementById('qcat').textContent=q.cat==="Kekuatan"?"Bahagian 1 \u00B7 Kekuatan":"Bahagian 2 \u00B7 Kelemahan";
+  document.getElementById('pcount').textContent=(idx+1)+" / "+QUESTIONS.length;
+  document.getElementById('pfill').style.width=((idx)/(QUESTIONS.length)*100)+"%";
+  if(!shuffledCache[idx]) shuffledCache[idx]=shuffle([...q.opts]);
+  const opts=shuffledCache[idx];
+  const box=document.getElementById('opts'); box.innerHTML="";
+  opts.forEach(o=>{
+    const b=document.createElement('button');
+    b.className="opt-btn"+(answers[idx]===o.t?" sel":"");
+    b.innerHTML='<span class="pip" style="background:'+T[o.t].warna+'"></span>'+o.w;
+    b.onclick=()=>{answers[idx]=o.t; renderQ();};
+    box.appendChild(b);
+  });
+  document.getElementById('backBtn').style.visibility=idx===0?"hidden":"visible";
+  document.getElementById('nextBtn').disabled=!answers[idx];
+  document.getElementById('nextBtn').textContent=idx===QUESTIONS.length-1?"Lihat Keputusan \u2192":"Seterusnya \u2192";
+}
+function nextQ(){
+  if(!answers[idx])return;
+  if(idx===QUESTIONS.length-1){finish();return;}
+  idx++; renderQ();
+}
+function prevQ(){if(idx>0){idx--;renderQ();}}
+
+/* ======================================================================
+   PENGIRAAN + KEPUTUSAN
+   ====================================================================== */
+function tally(){
+  const c={S:0,C:0,M:0,P:0};
+  answers.forEach(a=>{if(a)c[a]++});
+  return c;
+}
+function finish(){
+  document.getElementById('pfill').style.width="100%";
+  const c=tally();
+  const sorted=ORDER.slice().sort((a,b)=>c[b]-c[a]);
+  const dom=sorted[0], sec=sorted[1];
+  renderResult(c,dom,sec);
+  go('result');
+  saveResult(c,dom,sec);
+}
+
+function donutGradient(c){
+  const total=Object.values(c).reduce((a,b)=>a+b,0)||1;
+  let deg=0, stops=[];
+  ORDER.forEach(k=>{
+    const d=c[k]/total*360;
+    stops.push(cssColor(T[k].warna)+" "+deg+"deg "+(deg+d)+"deg");
+    deg+=d;
+  });
+  return "conic-gradient("+stops.join(",")+")";
+}
+
+function renderResult(c,dom,sec){
+  const total=Object.values(c).reduce((a,b)=>a+b,0)||1;
+  const D=T[dom], Sx=T[sec];
+  const pct=k=>Math.round(c[k]/total*100);
+  let bars="";
+  ORDER.slice().sort((a,b)=>c[b]-c[a]).forEach(k=>{
+    bars+='<div class="bar"><div class="top"><span>'+T[k].julukan+' ('+T[k].nama.split(" ")[1]+')</span><span>'+c[k]+' \u00B7 '+pct(k)+'%</span></div>'+
+      '<div class="track"><div class="fill" style="background:'+T[k].warna+';width:0" data-w="'+pct(k)+'"></div></div></div>';
+  });
+  const html=
+  '<div class="crest" style="background:linear-gradient(150deg,'+D.warna+','+D.dark+')">'+
+    '<div class="k">Personaliti Dominan Anda</div>'+
+    '<h2>'+D.nama+'</h2>'+
+    '<div class="role">'+D.julukan+' \u00B7 '+D.peranan+'</div>'+
+    '<div class="moto">'+D.moto+'</div>'+
+  '</div>'+
+  '<p class="secline">Disokong oleh kecenderungan <b>'+Sx.nama+'</b> ('+Sx.julukan+'). Anda ialah gabungan <b>'+dom+sec+'</b>.</p>'+
+  '<div class="donutwrap">'+
+    '<div class="donut" style="background:'+donutGradient(c)+'"><div class="hole"><b>'+pct(dom)+'%</b><small>'+dom+' Dominan</small></div></div>'+
+    '<div class="bars">'+bars+'</div>'+
+  '</div>'+
+  '<div class="sec"><h3><span class="tick" style="background:'+D.warna+'"></span>Tentang anda</h3><div class="flowtext"><p>'+D.ringkas+'</p></div></div>'+
+  '<div class="sec"><h3><span class="tick" style="background:var(--phleg)"></span>Kekuatan utama</h3><div class="chips">'+D.kuat.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div></div>'+
+  '<div class="sec"><h3><span class="tick" style="background:var(--chol)"></span>Cabaran untuk diberi perhatian</h3><div class="chips">'+D.cabaran.map(x=>'<span class="chip">'+x+'</span>').join('')+'</div></div>'+
+  '<div class="sec"><h3><span class="tick" style="background:var(--brass)"></span>Gaya kerja</h3><div class="flowtext"><p>'+D.kerja+'</p></div></div>'+
+  '<div class="sec"><h3><span class="tick" style="background:'+Sx.warna+'"></span>Tip berinteraksi dengan anda</h3><div class="tipbox">'+D.tips+'</div></div>';
+  document.getElementById('resultCard').innerHTML=html;
+  // animasi bar
+  requestAnimationFrame(()=>setTimeout(()=>{
+    document.querySelectorAll('#resultCard .bar .fill').forEach(f=>f.style.width=f.dataset.w+"%");
+  },120));
+}
+function restart(){go('intro');}
+
+/* ======================================================================
+   SIMPAN KE GAS
+   ====================================================================== */
+function saveResult(c,dom,sec){
+  const el=document.getElementById('savestate');
+  if(!CONFIG.GAS_URL){el.className="savestate";el.textContent="";return;}
+  el.className="savestate busy";el.textContent="Menyimpan keputusan\u2026";
+  const payload={
+    nama:user.nama||"(Tanpa nama)", unit:user.unit||"-",
+    dominan:T[dom].nama, sekunder:T[sec].nama, gabungan:dom+sec,
+    S:c.S,C:c.C,M:c.M,P:c.P
+  };
+  fetch(CONFIG.GAS_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(payload)})
+    .then(r=>r.json()).then(d=>{
+      if(d&&d.ok){el.className="savestate ok";el.textContent="\u2713 Keputusan disimpan.";}
+      else throw new Error();
+    }).catch(()=>{el.className="savestate err";el.textContent="Keputusan dipaparkan, namun gagal disimpan ke pangkalan data.";});
+}
+
+/* ======================================================================
+   DASHBOARD PENTADBIR
+   ====================================================================== */
+function loadAdmin(){
+  const pass=document.getElementById('adminPass').value;
+  const body=document.getElementById('adminBody');
+  if(pass!==CONFIG.ADMIN_PASS){body.innerHTML='<p class="secline" style="color:var(--chol)">Kata laluan tidak sah.</p>';return;}
+  if(!CONFIG.GAS_URL){body.innerHTML='<p class="secline">GAS_URL belum ditetapkan dalam CONFIG.</p>';return;}
+  body.innerHTML='<p class="secline busy">Memuatkan data\u2026</p>';
+  fetch(CONFIG.GAS_URL+"?action=list").then(r=>r.json()).then(rows=>{
+    if(!Array.isArray(rows)){body.innerHTML='<p class="secline">Tiada data.</p>';return;}
+    renderAdmin(rows);
+  }).catch(()=>{body.innerHTML='<p class="secline" style="color:var(--chol)">Gagal memuatkan data.</p>';});
+}
+function renderAdmin(rows){
+  const count={S:0,C:0,M:0,P:0};
+  const map={"Popular Sanguine":"S","Powerful Choleric":"C","Perfect Melancholy":"M","Peaceful Phlegmatic":"P"};
+  rows.forEach(r=>{const k=map[r.dominan];if(k)count[k]++;});
+  const total=rows.length||1;
+  let stat='<div class="stat">'+ORDER.map(k=>
+    '<div class="s" style="background:linear-gradient(150deg,'+T[k].warna+','+T[k].dark+')"><b>'+count[k]+'</b><small>'+T[k].julukan+'</small></div>'
+  ).join('')+'</div>';
+  let bars=ORDER.slice().sort((a,b)=>count[b]-count[a]).map(k=>{
+    const pc=Math.round(count[k]/total*100);
+    return '<div class="bar"><div class="top"><span>'+T[k].nama+'</span><span>'+count[k]+' \u00B7 '+pc+'%</span></div><div class="track"><div class="fill" style="background:'+T[k].warna+';width:'+pc+'%"></div></div></div>';
+  }).join('');
+  let trows=rows.slice().reverse().map(r=>{
+    const k=map[r.dominan]||"S";
+    return '<tr><td>'+(r.nama||'-')+'</td><td>'+(r.unit||'-')+'</td><td><span class="badge" style="background:'+T[k].warna+'">'+(r.gabungan||'-')+'</span></td><td>'+(r.dominan||'-')+'</td></tr>';
+  }).join('');
+  document.getElementById('adminBody').innerHTML=
+    stat+'<div style="margin:8px 0 18px">'+bars+'</div>'+
+    '<p class="secline" style="margin:6px 0 10px"><b>'+rows.length+'</b> respons direkod</p>'+
+    '<div class="tablewrap"><table><thead><tr><th>Nama</th><th>Unit</th><th>Jenis</th><th>Dominan</th></tr></thead><tbody>'+trows+'</tbody></table></div>';
+}
+
+/* shortcut: buka admin terus dgn ?admin */
+if(location.search.indexOf('admin')>-1) go('admin');
+</script>
+</body>
+</html>
